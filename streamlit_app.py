@@ -4,43 +4,6 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
-from openai import OpenAI
-
-client = OpenAI(
-    api_key="GEMINI_API_KEY",
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-)
-
-with open("https://file-examples.com/storage/fed00909ee67dc5db96303f/2017/11/file_example_WAV_1MG.wav", "rb") as audio_file:
-  base64_audio = base64.b64encode(audio_file.read()).decode('utf-8')
-
-response = client.chat.completions.create(
-    model="gemini-2.0-flash",
-    messages=[
-    {
-      "role": "user",
-      "content": [
-        {
-          "type": "text",
-          "text": "Transcribe this audio",
-        },
-        {
-              "type": "input_audio",
-              "input_audio": {
-                "data": base64_audio,
-                "format": "wav"
-          }
-        }
-      ],
-    }
-  ],
-)
-
-print(response.choices[0].message.content)
-
-
-
-
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
 def generate(input_text, platform):
