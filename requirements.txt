@@ -3,4 +3,5 @@ google-genai
 numpy
 streamlit-webrtc
 soundfile
+google-cloud-speech
 
