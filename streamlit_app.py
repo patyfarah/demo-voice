@@ -11,7 +11,7 @@ client = OpenAI(
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
-with open("/path/to/your/audio/file.wav", "rb") as audio_file:
+with open("https://file-examples.com/storage/fed00909ee67dc5db96303f/2017/11/file_example_WAV_1MG.wav", "rb") as audio_file:
   base64_audio = base64.b64encode(audio_file.read()).decode('utf-8')
 
 response = client.chat.completions.create(
