@@ -4,9 +4,77 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from streamlit_webrtc import webrtc_streamer
+import io
+import wave
 
-# Use webrtc_streamer to access the microphone
-webrtc_streamer(key="example", audio_receiver_size=1024)
+# Upload an audio file (for playback purposes)
+st.title("Audio Recorder in Streamlit Cloud")
+
+st.write("Click the button below to record your audio.")
+
+record_button = st.button("Start Recording")
+
+# Use HTML and JavaScript for audio recording in browser
+if record_button:
+    audio_html = """
+    <script>
+        let rec;
+        let audioStream;
+        let audioChunks = [];
+        
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({audio: true})
+                .then(function(stream) {
+                    audioStream = stream;
+                    rec = new MediaRecorder(stream);
+                    rec.ondataavailable = function(e) {
+                        audioChunks.push(e.data);
+                    };
+                    rec.onstop = function() {
+                        let audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
+                        let audioUrl = URL.createObjectURL(audioBlob);
+                        let audio = new Audio(audioUrl);
+                        audio.play();
+
+                        // Send audio to Streamlit
+                        let reader = new FileReader();
+                        reader.onload = function() {
+                            let audioData = reader.result;
+                            window.parent.postMessage({audio: audioData}, "*");
+                        };
+                        reader.readAsDataURL(audioBlob);
+                    };
+                    rec.start();
+                    console.log("Recording...");
+                });
+        }
+
+        function stopRecording() {
+            rec.stop();
+            audioStream.getTracks().forEach(track => track.stop());
+            console.log("Recording stopped.");
+        }
+
+        document.getElementById("recordButton").onclick = function() {
+            startRecording();
+        };
+
+        document.getElementById("stopButton").onclick = function() {
+            stopRecording();
+        };
+    </script>
+    <button id="recordButton">Start Recording</button>
+    <button id="stopButton">Stop Recording</button>
+    """
+
+    # Display HTML
+    st.markdown(audio_html, unsafe_allow_html=True)
+    
+    # Collecting the recorded audio and displaying it on Streamlit UI
+    audio_data = st.audio(None)  # Here you will receive audio from the JS code (e.g., via a post message)
+    if audio_data:
+        st.audio(audio_data, format='audio/wav')
+
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
