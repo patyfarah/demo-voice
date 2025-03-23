@@ -53,7 +53,7 @@ st.write("Click the button below to start recording audio.")
 # Initialize the WebRTC streamer
 webrtc_ctx = webrtc_streamer(key="audio-stream", 
                              audio_processor_factory=AudioProcessor,
-                             mode=webrtc_streamer.WebRtcMode.SENDRECV)
+                             mode=webrtc_streamer.WebRtcMode.SENDONLY)  # Correct mode
 
 if webrtc_ctx.state.playing:
     st.write("Recording audio...")
@@ -88,6 +88,7 @@ if st.button("تسجيل صوت"):
         st.write("Recording in progress...")
     else:
         st.write("Press the button to start recording.")
+
 
 # Platform selection
 st.subheader("اختر المنصة")
