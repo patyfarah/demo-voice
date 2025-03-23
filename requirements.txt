@@ -1,8 +1,5 @@
 streamlit
 google-genai
-sounddevice
-scipy
-vosk
 numpy
 streamlit-webrtc
 
