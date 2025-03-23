@@ -1,4 +1,6 @@
 import base64
+import io
+import wave
 import os
 import streamlit as st
 from google import genai
@@ -11,11 +13,6 @@ from vosk import Model, KaldiRecognizer
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
-# Initialize Vosk model
-vosk_model_path = "model"  # Path to a pre-downloaded Vosk model
-if not os.path.exists(vosk_model_path):
-    raise Exception("Please download a Vosk model and place it in the 'model' directory.")
-model = Model(vosk_model_path)
 
 def generate(input_text, platform):
     client = genai.Client(
@@ -72,35 +69,44 @@ def generate(input_text, platform):
         result += chunk.text
     return result
 
-def record_audio():
-    st.info("جاري تسجيل الصوت... تحدث الآن")
-    duration = 10  # Record for 10 seconds
-    sample_rate = 16000
-    try:
-        audio = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
-        sd.wait()  # Wait for the recording to finish
+import streamlit as st
+import sounddevice as sd
+import numpy as np
+import wave
+import io
 
-        # Save audio to a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav:
-            wav.write(temp_wav.name, sample_rate, audio)
-            temp_wav_path = temp_wav.name
+# Function to record audio
+def record_audio(duration=5, fs=44100):
+    st.write("Recording...")
+    recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='int16')
+    sd.wait()
+    st.write("Recording complete.")
+    return recording
 
-        # Recognize speech using Vosk
-        recognizer = KaldiRecognizer(model, sample_rate)
-        with open(temp_wav_path, "rb") as wav_file:
-            recognizer.AcceptWaveform(wav_file.read())
-            result = recognizer.Result()
+# Function to save audio to in-memory file
+def audio_to_bytes(audio_data, fs=44100):
+    with io.BytesIO() as byte_io:
+        with wave.open(byte_io, 'wb') as wf:
+            wf.setnchannels(2)
+            wf.setsampwidth(2)
+            wf.setframerate(fs)
+            wf.writeframes(audio_data)
+        return byte_io.getvalue()
 
-        # Extract text from result
-        text = eval(result).get("text", "")
-        if text:
-            st.success("تم تسجيل الصوت واستخراج النص بنجاح!")
-            return text
-        else:
-            st.error("لم يتم التعرف على أي نص. حاول مرة أخرى.")
-    except Exception as e:
-        st.error(f"حدث خطأ أثناء تسجيل الصوت: {e}")
-    return None
+# Streamlit UI for recording
+st.title("Microphone Audio Recorder")
+
+duration = st.slider("Recording Duration (seconds)", 1, 10, 5)
+if st.button("Start Recording"):
+    audio_data = record_audio(duration=duration)
+    audio_bytes = audio_to_bytes(audio_data)
+    
+    # Display the audio as a player
+    st.audio(audio_bytes, format='audio/wav')
+
+
+
+
 
 # Streamlit app
 st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
