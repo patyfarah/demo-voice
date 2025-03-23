@@ -1,24 +1,43 @@
 import streamlit as st
-import io
-import base64
-
-# Import the necessary module for speech recognition (SpeechRecognition)
 import speech_recognition as sr
+from streamlit_webrtc import webrtc_streamer, AudioProcessorBase
+import numpy as np
+import io
+import tempfile
 
-st.write("Click the button below to record your audio.")
+# A custom audio processor for recording and processing the audio
+class AudioProcessor(AudioProcessorBase):
+    def __init__(self):
+        self.recognizer = sr.Recognizer()
+        self.audio_data = None
 
-# Function for converting audio to text using SpeechRecognition (Free tool)
+    def recv(self, frame):
+        # Convert audio frame to numpy array
+        audio_np = np.array(frame.to_ndarray(), dtype=np.float32)
+        if self.audio_data is None:
+            self.audio_data = audio_np
+        else:
+            self.audio_data = np.concatenate((self.audio_data, audio_np), axis=0)
+        return frame
+
+    def get_audio_data(self):
+        return self.audio_data
+
+# Function to convert audio data to text using SpeechRecognition
 def convert_audio_to_text(audio_data):
     recognizer = sr.Recognizer()
-    # Save the audio as a temporary file
-    with open("temp.wav", "wb") as f:
-        f.write(audio_data)
+    if audio_data is None:
+        return "No audio recorded"
 
-    # Use the SpeechRecognition library to convert audio to text
-    with sr.AudioFile("temp.wav") as source:
-        audio = recognizer.record(source)  # Read the entire audio file
+    # Convert audio to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
+        tmpfile.write(audio_data.tobytes())
+        tmpfile_path = tmpfile.name
+
+    # Process the temporary audio file
+    with sr.AudioFile(tmpfile_path) as source:
+        audio = recognizer.record(source)
         try:
-            # Using the Google Web Speech API (free and built-in in SpeechRecognition)
             text = recognizer.recognize_google(audio)
             return text
         except sr.UnknownValueError:
@@ -26,70 +45,24 @@ def convert_audio_to_text(audio_data):
         except sr.RequestError:
             return "Could not request results from Google Speech Recognition service."
 
-# Use HTML and JavaScript for audio recording in browser
-record_button = st.button("Start Recording")
+# Streamlit UI
+st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
 
-if record_button:
-    # JavaScript code to enable audio recording in browser
-    audio_html = """
-    <script>
-        let rec;
-        let audioStream;
-        let audioChunks = [];
-        
-        function startRecording() {
-            navigator.mediaDevices.getUserMedia({audio: true})
-                .then(function(stream) {
-                    audioStream = stream;
-                    rec = new MediaRecorder(stream);
-                    rec.ondataavailable = function(e) {
-                        audioChunks.push(e.data);
-                    };
-                    rec.onstop = function() {
-                        let audioBlob = new Blob(audioChunks, {type: 'audio/wav'});
-                        let audioUrl = URL.createObjectURL(audioBlob);
-                        let audio = new Audio(audioUrl);
-                        audio.play();
+st.write("Click the button below to start recording audio.")
 
-                        // Send audio to Streamlit (via hidden iframe communication)
-                        let reader = new FileReader();
-                        reader.onload = function() {
-                            let audioData = reader.result;
-                            window.parent.postMessage({audio: audioData}, "*");
-                        };
-                        reader.readAsDataURL(audioBlob);
-                    };
-                    rec.start();
-                    console.log("Recording...");
-                });
-        }
+# Initialize the WebRTC streamer
+webrtc_ctx = webrtc_streamer(key="audio-stream", 
+                             audio_processor_factory=AudioProcessor,
+                             mode=webrtc_streamer.WebRtcMode.SENDRECV)
 
-        function stopRecording() {
-            rec.stop();
-            audioStream.getTracks().forEach(track => track.stop());
-            console.log("Recording stopped.");
-        }
+if webrtc_ctx.state.playing:
+    st.write("Recording audio...")
 
-        document.getElementById("recordButton").onclick = function() {
-            startRecording();
-        };
+    # Wait for the audio to be processed
+    audio_data = webrtc_ctx.audio_processor.get_audio_data()
 
-        document.getElementById("stopButton").onclick = function() {
-            stopRecording();
-        };
-    </script>
-    <button id="recordButton">Start Recording</button>
-    <button id="stopButton">Stop Recording</button>
-    """
-    # Display HTML
-    st.markdown(audio_html, unsafe_allow_html=True)
-
-    # Collecting the recorded audio and displaying it on Streamlit UI (mocked function)
-    # Here, assume you will receive the audio through a post message.
-    audio_data = ""  # Replace this with actual audio data received from JavaScript.
-
-    if audio_data:
-        # Convert the audio to text
+    if audio_data is not None:
+        # Convert the recorded audio data to text
         transcribed_text = convert_audio_to_text(audio_data)
         st.text_area("Extracted Text from Audio:", value=transcribed_text, height=100)
 
@@ -105,19 +78,16 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
-
-# Input fields
 st.subheader("حدد الموضوع")
 input_text = st.text_area("أدخل مضمون النص:")
 
 # Voice recording
 st.subheader("أو قم بتسجيل ملاحظة صوتية")
 if st.button("تسجيل صوت"):
-    recorded_text = convert_audio_to_text(audio_data)
-    if recorded_text:
-        input_text = recorded_text
-        st.text_area("النص المستخرج من الصوت:", value=recorded_text, height=100)
+    if webrtc_ctx.state.playing:
+        st.write("Recording in progress...")
+    else:
+        st.write("Press the button to start recording.")
 
 # Platform selection
 st.subheader("اختر المنصة")
