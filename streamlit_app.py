@@ -139,9 +139,6 @@ def generate(input_text, platform):
     return result
 
 
-# Streamlit app
-st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
-
 st.markdown(
     """
     <style>
