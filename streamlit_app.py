@@ -3,9 +3,19 @@ import os
 import streamlit as st
 from google import genai
 from google.genai import types
-import speech_recognition as sr
+import sounddevice as sd
+import numpy as np
+import tempfile
+import scipy.io.wavfile as wav
+from vosk import Model, KaldiRecognizer
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
+
+# Initialize Vosk model
+vosk_model_path = "model"  # Path to a pre-downloaded Vosk model
+if not os.path.exists(vosk_model_path):
+    raise Exception("Please download a Vosk model and place it in the 'model' directory.")
+model = Model(vosk_model_path)
 
 def generate(input_text, platform):
     client = genai.Client(
@@ -63,19 +73,34 @@ def generate(input_text, platform):
     return result
 
 def record_audio():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.info("جاري تسجيل الصوت... تحدث الآن")
-        try:
-            audio = recognizer.listen(source, timeout=10)
-            st.success("تم تسجيل الصوت بنجاح!")
-            text = recognizer.recognize_google(audio, language="ar")
+    st.info("جاري تسجيل الصوت... تحدث الآن")
+    duration = 10  # Record for 10 seconds
+    sample_rate = 16000
+    try:
+        audio = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
+        sd.wait()  # Wait for the recording to finish
+
+        # Save audio to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav:
+            wav.write(temp_wav.name, sample_rate, audio)
+            temp_wav_path = temp_wav.name
+
+        # Recognize speech using Vosk
+        recognizer = KaldiRecognizer(model, sample_rate)
+        with open(temp_wav_path, "rb") as wav_file:
+            recognizer.AcceptWaveform(wav_file.read())
+            result = recognizer.Result()
+
+        # Extract text from result
+        text = eval(result).get("text", "")
+        if text:
+            st.success("تم تسجيل الصوت واستخراج النص بنجاح!")
             return text
-        except sr.UnknownValueError:
-            st.error("لم يتمكن النظام من التعرف على الصوت. حاول مرة أخرى.")
-        except sr.RequestError as e:
-            st.error(f"حدث خطأ في الخدمة: {e}")
-        return None
+        else:
+            st.error("لم يتم التعرف على أي نص. حاول مرة أخرى.")
+    except Exception as e:
+        st.error(f"حدث خطأ أثناء تسجيل الصوت: {e}")
+    return None
 
 # Streamlit app
 st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
