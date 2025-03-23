@@ -55,6 +55,7 @@ webrtc_ctx = webrtc_streamer(
     key="audio-stream", 
     audio_processor_factory=AudioProcessor,
     mode=WebRtcMode.SENDRECV
+)
 
 if webrtc_ctx.state.playing:
     st.write("Recording audio...")
