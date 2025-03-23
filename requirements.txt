@@ -4,4 +4,5 @@ sounddevice
 scipy
 vosk
 numpy
+streamlit-webrtc
 
