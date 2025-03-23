@@ -3,6 +3,7 @@ import os
 import streamlit as st
 from google import genai
 from google.genai import types
+import speech_recognition as sr
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
@@ -61,6 +62,21 @@ def generate(input_text, platform):
         result += chunk.text
     return result
 
+def record_audio():
+    recognizer = sr.Recognizer()
+    with sr.Microphone() as source:
+        st.info("جاري تسجيل الصوت... تحدث الآن")
+        try:
+            audio = recognizer.listen(source, timeout=10)
+            st.success("تم تسجيل الصوت بنجاح!")
+            text = recognizer.recognize_google(audio, language="ar")
+            return text
+        except sr.UnknownValueError:
+            st.error("لم يتمكن النظام من التعرف على الصوت. حاول مرة أخرى.")
+        except sr.RequestError as e:
+            st.error(f"حدث خطأ في الخدمة: {e}")
+        return None
+
 # Streamlit app
 st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
 
@@ -81,6 +97,14 @@ st.title("أداة لخلق محتوى بيئي لمنصات التواصل ال
 # Input fields
 st.subheader("حدد الموضوع")
 input_text = st.text_area("أدخل مضمون النص:")
+
+# Voice recording
+st.subheader("أو قم بتسجيل ملاحظة صوتية")
+if st.button("تسجيل صوت"):
+    recorded_text = record_audio()
+    if recorded_text:
+        input_text = recorded_text
+        st.text_area("النص المستخرج من الصوت:", value=recorded_text, height=100)
 
 # Platform selection
 st.subheader("اختر المنصة")
