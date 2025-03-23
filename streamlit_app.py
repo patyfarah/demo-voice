@@ -1,15 +1,12 @@
 import base64
-import io
-import wave
 import os
 import streamlit as st
 from google import genai
 from google.genai import types
-import sounddevice as sd
-import numpy as np
-import tempfile
-import scipy.io.wavfile as wav
-from vosk import Model, KaldiRecognizer
+from streamlit_webrtc import webrtc_streamer
+
+# Use webrtc_streamer to access the microphone
+webrtc_streamer(key="example", audio_receiver_size=1024)
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
@@ -68,45 +65,6 @@ def generate(input_text, platform):
     ):
         result += chunk.text
     return result
-
-import streamlit as st
-import sounddevice as sd
-import numpy as np
-import wave
-import io
-
-# Function to record audio
-def record_audio(duration=5, fs=44100):
-    st.write("Recording...")
-    recording = sd.rec(int(duration * fs), samplerate=fs, channels=2, dtype='int16')
-    sd.wait()
-    st.write("Recording complete.")
-    return recording
-
-# Function to save audio to in-memory file
-def audio_to_bytes(audio_data, fs=44100):
-    with io.BytesIO() as byte_io:
-        with wave.open(byte_io, 'wb') as wf:
-            wf.setnchannels(2)
-            wf.setsampwidth(2)
-            wf.setframerate(fs)
-            wf.writeframes(audio_data)
-        return byte_io.getvalue()
-
-# Streamlit UI for recording
-st.title("Microphone Audio Recorder")
-
-duration = st.slider("Recording Duration (seconds)", 1, 10, 5)
-if st.button("Start Recording"):
-    audio_data = record_audio(duration=duration)
-    audio_bytes = audio_to_bytes(audio_data)
-    
-    # Display the audio as a player
-    st.audio(audio_bytes, format='audio/wav')
-
-
-
-
 
 # Streamlit app
 st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
