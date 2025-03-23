@@ -121,4 +121,14 @@ if st.button("تسجيل صوت"):
 
 # Platform selection
 st.subheader("اختر المنصة")
-platform =
+platform = st.selectbox("اختر منصة التواصل الاجتماعي:", ["X", "Facebook", "LinkedIn"])
+
+# Generate button
+if st.button("Generate"):
+    with st.spinner("Generating content..."):
+        try:
+            output = generate(input_text, platform)
+            st.success("تم خلق المحتوى بنجاح!")
+            st.text_area("مضمون المحتوى:", value=output, height=300)
+        except Exception as e:
+            st.error(f"خطأ: {e}")
