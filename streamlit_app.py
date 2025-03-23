@@ -1,72 +1,68 @@
+import base64
+import os
 import streamlit as st
-import speech_recognition as sr
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, AudioProcessorBase
-import numpy as np
-import io
-import tempfile
+from google import genai
+from google.genai import types
 
-# A custom audio processor for recording and processing the audio
-class AudioProcessor(AudioProcessorBase):
-    def __init__(self):
-        self.recognizer = sr.Recognizer()
-        self.audio_data = None
+gemini_api_key = st.secrets["GeminiAI_Key"]
 
-    def recv(self, frame):
-        # Convert audio frame to numpy array
-        audio_np = np.array(frame.to_ndarray(), dtype=np.float32)
-        if self.audio_data is None:
-            self.audio_data = audio_np
-        else:
-            self.audio_data = np.concatenate((self.audio_data, audio_np), axis=0)
-        return frame
+def generate(input_text, platform):
+    client = genai.Client(
+        api_key=gemini_api_key,
+    )
 
-    def get_audio_data(self):
-        return self.audio_data
+    model = "gemini-2.0-flash"
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_text(text=input_text),
+            ],
+        ),
+    ]
 
-# Function to convert audio data to text using SpeechRecognition
-def convert_audio_to_text(audio_data):
-    recognizer = sr.Recognizer()
-    if audio_data is None:
-        return "No audio recorded"
+    # Platform-specific configurations
+    platform_config = {
+        "X": {
+            "max_tokens": 280,
+            "instruction": "اعطني كخبير في مجال البيئة تغريدة لمنصة إكس، احصر إجابتك بالمواضيع البيئية فقط وعدد المقترح واحد، لا جواب إذا لم يكن الموضوع بيئيًا."
+        },
+        "Facebook": {
+            "max_tokens": 500,
+            "instruction": "كخبير في البيئة، اكتب منشورًا مناسبًا لمنصة فيسبوك عن الموضوع البيئي الذي أدخلته. يمكن أن يكون المنشور أطول ويحتوي على تفاصيل أكثر."
+        },
+        "LinkedIn": {
+            "max_tokens": 700,
+            "instruction": "كخبير بيئي، اكتب منشورًا محترفًا يناسب منصة لينكد إن عن الموضوع البيئي الذي أدخلته. ركز على التفاصيل والمعلومات الدقيقة."
+        },
+    }
 
-    # Convert audio to a temporary file
-    with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
-        tmpfile.write(audio_data.tobytes())
-        tmpfile_path = tmpfile.name
+    selected_config = platform_config.get(platform, {})
 
-    # Process the temporary audio file
-    with sr.AudioFile(tmpfile_path) as source:
-        audio = recognizer.record(source)
-        try:
-            text = recognizer.recognize_google(audio)
-            return text
-        except sr.UnknownValueError:
-            return "Sorry, I couldn't understand the audio."
-        except sr.RequestError:
-            return "Could not request results from Google Speech Recognition service."
+    generate_content_config = types.GenerateContentConfig(
+        temperature=2,
+        top_p=0.95,
+        top_k=40,
+        max_output_tokens=selected_config.get("max_tokens", 100),
+        response_mime_type="text/plain",
+        system_instruction=[
+            types.Part.from_text(
+                text=selected_config.get("instruction", "")
+            ),
+        ],
+    )
 
-# Streamlit UI
-st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
+    result = ""
+    for chunk in client.models.generate_content_stream(
+        model=model,
+        contents=contents,
+        config=generate_content_config,
+    ):
+        result += chunk.text
+    return result
 
-st.write("Click the button below to start recording audio.")
-
-# Initialize the WebRTC streamer
-webrtc_ctx = webrtc_streamer(
-    key="audio-stream", 
-    audio_processor_factory=AudioProcessor,
-    mode=WebRtcMode.SENDRECV
-)
-
-if webrtc_ctx.state.playing:
-    st.write("Recording audio...")
-
-    # Wait for the audio to be processed
-    audio_data = webrtc_ctx.audio_processor.get_audio_data()
-
-    if audio_data is not None:
-        # Convert the recorded audio data to text
-        transcribed_text = convert_audio_to_text(audio_data)
-        st.text_area("Extracted Text from Audio:", value=transcribed_text, height=100)
+# Streamlit app
+st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
 
 st.markdown(
     """
@@ -80,17 +76,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
+
+# Input fields
 st.subheader("حدد الموضوع")
 input_text = st.text_area("أدخل مضمون النص:")
-
-# Voice recording
-st.subheader("أو قم بتسجيل ملاحظة صوتية")
-if st.button("تسجيل صوت"):
-    if webrtc_ctx.state.playing:
-        st.write("Recording in progress...")
-    else:
-        st.write("Press the button to start recording.")
-
 
 # Platform selection
 st.subheader("اختر المنصة")
