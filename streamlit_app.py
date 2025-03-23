@@ -8,9 +8,6 @@ import io
 import wave
 import soundfile as sf
 
-# Upload an audio file (for playback purposes)
-st.title("Audio Recorder in Streamlit Cloud")
-
 st.write("Click the button below to record your audio.")
 
 # Function for recording and converting audio to text (simple version using speech-to-text API)
