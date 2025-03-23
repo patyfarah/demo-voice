@@ -1,7 +1,7 @@
 streamlit
 google-genai
 numpy
-streamlit-webrtc --upgrade
+streamlit-webrtc
 soundfile
 SpeechRecognition 
 
