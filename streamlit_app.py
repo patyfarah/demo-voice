@@ -1,6 +1,6 @@
 import streamlit as st
 import speech_recognition as sr
-from streamlit_webrtc import webrtc_streamer, AudioProcessorBase
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, AudioProcessorBase
 import numpy as np
 import io
 import tempfile
@@ -51,9 +51,10 @@ st.title("أداة لخلق محتوى بيئي لمنصات التواصل ال
 st.write("Click the button below to start recording audio.")
 
 # Initialize the WebRTC streamer
-webrtc_ctx = webrtc_streamer(key="audio-stream", 
-                             audio_processor_factory=AudioProcessor,
-                             mode=webrtc_streamer.WebRtcMode.SENDONLY)  # Correct mode
+webrtc_ctx = webrtc_streamer(
+    key="audio-stream", 
+    audio_processor_factory=AudioProcessor,
+    mode=WebRtcMode.SENDRECV
 
 if webrtc_ctx.state.playing:
     st.write("Recording audio...")
