@@ -1,45 +1,36 @@
-import base64
-import os
 import streamlit as st
-from google import genai
-from google.genai import types
-from streamlit_webrtc import webrtc_streamer
 import io
-import wave
-import soundfile as sf
-from google.cloud import speech
+import base64
+
+# Import the necessary module for speech recognition (SpeechRecognition)
+import speech_recognition as sr
 
 st.write("Click the button below to record your audio.")
 
-# Function for recording and converting audio to text using Google Speech-to-Text API
-def record_audio():
-    audio_file = st.file_uploader("Upload your audio file", type=["wav", "mp3"])
-    if audio_file:
-        audio_data = audio_file.read()
-        # Transcription logic using Google Cloud Speech-to-Text API
-        client = speech.SpeechClient()
-        audio = speech.RecognitionAudio(content=audio_data)
-        config = speech.RecognitionConfig(
-            encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-            sample_rate_hertz=16000,
-            language_code="en-US",
-        )
-        response = client.recognize(config=config, audio=audio)
-        
-        transcribed_text = ""
-        for result in response.results:
-            transcribed_text += result.alternatives[0].transcript
-        
-        st.audio(audio_data)
-        return transcribed_text
-    return ""
+# Function for converting audio to text using SpeechRecognition (Free tool)
+def convert_audio_to_text(audio_data):
+    recognizer = sr.Recognizer()
+    # Save the audio as a temporary file
+    with open("temp.wav", "wb") as f:
+        f.write(audio_data)
 
+    # Use the SpeechRecognition library to convert audio to text
+    with sr.AudioFile("temp.wav") as source:
+        audio = recognizer.record(source)  # Read the entire audio file
+        try:
+            # Using the Google Web Speech API (free and built-in in SpeechRecognition)
+            text = recognizer.recognize_google(audio)
+            return text
+        except sr.UnknownValueError:
+            return "Sorry, I couldn't understand the audio."
+        except sr.RequestError:
+            return "Could not request results from Google Speech Recognition service."
 
 # Use HTML and JavaScript for audio recording in browser
 record_button = st.button("Start Recording")
 
 if record_button:
-    # Replace the HTML code with a more functional audio recording feature
+    # JavaScript code to enable audio recording in browser
     audio_html = """
     <script>
         let rec;
@@ -90,67 +81,17 @@ if record_button:
     <button id="recordButton">Start Recording</button>
     <button id="stopButton">Stop Recording</button>
     """
-
     # Display HTML
     st.markdown(audio_html, unsafe_allow_html=True)
 
     # Collecting the recorded audio and displaying it on Streamlit UI (mocked function)
-    audio_data = record_audio()  # Here you would receive audio from the JS code (e.g., via a post message)
+    # Here, assume you will receive the audio through a post message.
+    audio_data = ""  # Replace this with actual audio data received from JavaScript.
+
     if audio_data:
-        st.audio(audio_data, format='audio/wav')
-
-
-gemini_api_key = st.secrets["GeminiAI_Key"]
-
-
-def generate(input_text, platform):
-    client = genai.Client(
-        api_key=gemini_api_key,
-    )
-
-    model = "gemini-2.0-flash"
-    contents = [
-        types.Content(
-            role="user",
-            parts=[types.Part.from_text(text=input_text)],
-        ),
-    ]
-
-    platform_config = {
-        "X": {
-            "max_tokens": 280,
-            "instruction": "اعطني كخبير في مجال البيئة تغريدة لمنصة إكس، احصر إجابتك بالمواضيع البيئية فقط وعدد المقترح واحد، لا جواب إذا لم يكن الموضوع بيئيًا."
-        },
-        "Facebook": {
-            "max_tokens": 500,
-            "instruction": "كخبير في البيئة، اكتب منشورًا مناسبًا لمنصة فيسبوك عن الموضوع البيئي الذي أدخلته. يمكن أن يكون المنشور أطول ويحتوي على تفاصيل أكثر."
-        },
-        "LinkedIn": {
-            "max_tokens": 700,
-            "instruction": "كخبير بيئي، اكتب منشورًا محترفًا يناسب منصة لينكد إن عن الموضوع البيئي الذي أدخلته. ركز على التفاصيل والمعلومات الدقيقة."
-        },
-    }
-
-    selected_config = platform_config.get(platform, {})
-
-    generate_content_config = types.GenerateContentConfig(
-        temperature=2,
-        top_p=0.95,
-        top_k=40,
-        max_output_tokens=selected_config.get("max_tokens", 100),
-        response_mime_type="text/plain",
-        system_instruction=[types.Part.from_text(text=selected_config.get("instruction", ""))],
-    )
-
-    result = ""
-    for chunk in client.models.generate_content_stream(
-        model=model,
-        contents=contents,
-        config=generate_content_config,
-    ):
-        result += chunk.text
-    return result
-
+        # Convert the audio to text
+        transcribed_text = convert_audio_to_text(audio_data)
+        st.text_area("Extracted Text from Audio:", value=transcribed_text, height=100)
 
 st.markdown(
     """
@@ -173,21 +114,11 @@ input_text = st.text_area("أدخل مضمون النص:")
 # Voice recording
 st.subheader("أو قم بتسجيل ملاحظة صوتية")
 if st.button("تسجيل صوت"):
-    recorded_text = record_audio()
+    recorded_text = convert_audio_to_text(audio_data)
     if recorded_text:
         input_text = recorded_text
         st.text_area("النص المستخرج من الصوت:", value=recorded_text, height=100)
 
 # Platform selection
 st.subheader("اختر المنصة")
-platform = st.selectbox("اختر منصة التواصل الاجتماعي:", ["X", "Facebook", "LinkedIn"])
-
-# Generate button
-if st.button("Generate"):
-    with st.spinner("Generating content..."):
-        try:
-            output = generate(input_text, platform)
-            st.success("تم خلق المحتوى بنجاح!")
-            st.text_area("مضمون المحتوى:", value=output, height=300)
-        except Exception as e:
-            st.error(f"خطأ: {e}")
+platform =
