@@ -7,13 +7,16 @@ from audio_recorder_streamlit import audio_recorder
 import whisper
 from pydub import AudioSegment
 
-# Install ffmpeg if not installed
-if not os.system("which ffmpeg"):
-    os.system("apt-get update && apt-get install ffmpeg -y")
+# Ensure ffmpeg is available via Python (Streamlit Cloud doesn't support apt-get install)
+try:
+    import ffmpeg
+except ImportError:
+    st.warning("FFmpeg is not installed. Some features may not work.")
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
 def convert_to_wav(input_path, output_path):
+    """Converts audio to wav format."""
     audio = AudioSegment.from_file(input_path)
     audio.export(output_path, format="wav")
     
@@ -54,6 +57,7 @@ def data_to_file(recorded_audio):
     return temp_audio_path
 
 def preprocess_audio(audio_path):
+    """Preprocesses audio before transcription."""
     # Load the audio file (convert MP3 to WAV for compatibility)
     audio = AudioSegment.from_file(audio_path)
 
@@ -65,14 +69,19 @@ def preprocess_audio(audio_path):
     
 # Function to transcribe audio to text using Whisper
 def audio_to_text(audio_path):
+    """Transcribes audio to text using Whisper."""
     # Load the Whisper model (use the smallest model for Streamlit Cloud)
     model = whisper.load_model("small")  # You can choose 'base', 'small', 'medium', or 'large'
+    
+    # Preprocess audio if needed
+    audio_path = preprocess_audio(audio_path)
+    
     # Transcribe the audio file
     result = model.transcribe(audio_path, language="ar")  # 'ar' for Arabic transcription, 'en' for English
-    st.text_area("","ok")
     return result["text"]
 
 def generate(input_text, platform):
+    """Generates content based on user input and platform."""
     client = genai.Client(
         api_key=gemini_api_key,
     )
@@ -81,9 +90,7 @@ def generate(input_text, platform):
     contents = [
         types.Content(
             role="user",
-            parts=[
-                types.Part.from_text(text=input_text),
-            ],
+            parts=[types.Part.from_text(text=input_text)],
         ),
     ]
 
@@ -111,11 +118,7 @@ def generate(input_text, platform):
         top_k=40,
         max_output_tokens=selected_config.get("max_tokens", 100),
         response_mime_type="text/plain",
-        system_instruction=[
-            types.Part.from_text(
-                text=selected_config.get("instruction", "")
-            ),
-        ],
+        system_instruction=[types.Part.from_text(text=selected_config.get("instruction", ""))],
     )
 
     result = ""
