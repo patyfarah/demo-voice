@@ -115,7 +115,7 @@ st.markdown(
 
 st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
 # Run the frontend function
-transcription=frontend()
+transcription = frontend()
 # Input fields
 st.subheader("حدد الموضوع")
 input_text = st.text_area("أدخل مضمون النص:",transcription)
