@@ -28,10 +28,11 @@ def frontend():
     # Handle the recorded audio
     if recorded_audio:
         st.audio(recorded_audio, format="audio/wav")
-        st.write("Recording complete! Uploading to GitHub...")
-
+        st.write("Recording complete!")
+        
         # Save the audio to a file locally
         audio_path = 'temp_audio.wav'
+        st.text_area("Path", audio_path, height=100)
         with open(audio_path, 'wb') as f:
             f.write(recorded_audio)
 
