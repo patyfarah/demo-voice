@@ -8,7 +8,6 @@ from pydub import AudioSegment
 from groq import Groq
 import edge_tts
 import asyncio
-from transformers import MarianMTModel, MarianTokenizer
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
@@ -43,18 +42,6 @@ def audio_to_text(audio_path):
             file=(audio_path, file.read()),
             model='whisper-large-v3'
         )
-        # Step 2: Translate to Arabic
-    # Initialize MarianMT model and tokenizer for English to Arabic translation
-    model_name = 'Helsinki-NLP/opus-mt-en-ar'
-    model = MarianMTModel.from_pretrained(model_name)
-    tokenizer = MarianTokenizer.from_pretrained(model_name)
-
-    # Tokenize the input text
-    translated = tokenizer(transcription, return_tensors="pt", padding=True, truncation=True)
-
-    # Translate
-    translated_tokens = model.generate(**translated)
-    translated_text = tokenizer.decode(translated_tokens[0], skip_special_tokens=True)
     return transcription.text
 
 
