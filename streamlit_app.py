@@ -6,69 +6,69 @@ from google.genai import types
 from audio_recorder_streamlit import audio_recorder
 import whisper
 from pydub import AudioSegment
+from groq import Groq
+import edge_tts
+import asyncio
+
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
+Groq_API_key = st.secrets["Groq_API_key"]
 
- 
-# Frontend for the application
+# Front end using streamlit
 def frontend():
     status_placeholder = st.empty()
-    status_placeholder.write("سجل الموضوع بصوتك.")
+    status_placeholder.write("Press the mic button to start speaking")
 
-    # Record audio input
     recorded_audio = audio_recorder(sample_rate=8000)
 
-    # Handle the recorded audio
+    # Handle user input
     if recorded_audio:
-        st.audio(recorded_audio, format="audio/wav")
-        st.write("تم تسجيل بنجاح!")
-        
-        # Save the audio to a file locally
-        temp_path = data_to_file(recorded_audio)
-        # Transcribe the audio to text (Whisper)
-        transcription = audio_to_text(recorded_audio)
+        status_placeholder.write("Converting audio...")
+        data_to_file(recorded_audio)
+        status_placeholder.write("Uploading audio...")
+        transcription = audio_to_text("temp_audio.wav")
         status_placeholder.write("Transcription completed.")
+        translated_text = translate_to_arabic(transcription)
+        status_placeholder.write("Translation completed.")
+        status_placeholder.write(f"Arabic Translation: {translated_text}")
+        status_placeholder.write("Converting translation to audio...")
 
-        # Display the transcription in the input area
-        st.text_area("Transcription", transcription, height=200)
+        # Generate unique audio filename for translation
+        audio_filename = "translated_audio.wav"
+        asyncio.run(convert_audio(translated_text, audio_filename))
 
-# Function to convert audio data to a file
+        # Play translated audio
+        st.audio(audio_filename, format="audio/wav")
+
+# Function to convert audio data to audio file
 def data_to_file(recorded_audio):
     temp_audio_path = "temp_audio.wav"
     with open(temp_audio_path, "wb") as temp_file:
         temp_file.write(recorded_audio)
 
-    # Check if the file exists and is a valid audio file
-    if os.path.exists(temp_audio_path):
-        print(f"Audio file saved at: {temp_audio_path}")
-    else:
-        print(f"Failed to save audio file at: {temp_audio_path}")
-    
-    return temp_audio_path
-
-def preprocess_audio(audio_path):
-    """Preprocesses audio before transcription."""
-    # Load the audio file (convert MP3 to WAV for compatibility)
-    audio = AudioSegment.from_file(audio_path)
-
-    # Export it as a WAV file (You can change format if necessary)
-    processed_audio_path = "processed_audio.wav"
-    audio.export(processed_audio_path, format="wav")
-
-    return processed_audio_path
-    
-# Function to transcribe audio to text using Whisper
+# Function for audio to text
 def audio_to_text(audio_path):
-    """Transcribes audio to text using Whisper."""
-    # Load the Whisper model (use the smallest model for Streamlit Cloud)
-    model = whisper.load_model("small")  # You can choose 'base', 'small', 'medium', or 'large'
-    
-    # Preprocess audio if needed
-    audio_path = preprocess_audio(audio_path)
-    
-    # Transcribe the audio file
-    result = model.transcribe(audio_path, language="ar")  # 'ar' for Arabic transcription, 'en' for English
-    return result["text"]
+    client = Groq(api_key=Groq_API_key)
+    with open(audio_path, 'rb') as file:
+        transcription = client.audio.translations.create(
+            file=(audio_path, file.read()),
+            model='whisper-large-v3',
+        )
+    return transcription.text
+
+# Function to translate text to Arabic
+def translate_to_arabic(text):
+    # Implement translation to Arabic (for now, simulate the translation)
+    return f"الترجمة إلى العربية: {text}"
+
+# Audio conversion
+async def convert_audio(text, filename):
+    voice = "ar-EG-OmarNeural"  # Arabic voice
+    communicate = edge_tts.Communicate(text, voice)
+    await communicate.save(filename)
+
+frontend()
+ 
 
 def generate(input_text, platform):
     """Generates content based on user input and platform."""
