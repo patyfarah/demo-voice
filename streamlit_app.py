@@ -8,6 +8,7 @@ from pydub import AudioSegment
 from groq import Groq
 import edge_tts
 import asyncio
+from googletrans import Translator
 
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
@@ -43,6 +44,9 @@ def audio_to_text(audio_path):
             file=(audio_path, file.read()),
             model='whisper-large-v3'
         )
+        # Step 2: Translate to Arabic
+    translator = Translator()
+    arabic_text = translator.translate(transcription.text, dest='ar').text    
     return transcription.text
 
 
