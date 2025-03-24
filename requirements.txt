@@ -8,5 +8,4 @@ langchain_community
 langchain_groq
 edge-tts
 groq 
-googletrans
-
+transformers
