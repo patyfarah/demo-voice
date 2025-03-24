@@ -6,6 +6,7 @@ from google.genai import types
 from audio_recorder_streamlit import audio_recorder
 import whisper
 from dotenv import load_dotenv
+from pydub import AudioSegment
 
 load_dotenv()
 
@@ -47,6 +48,16 @@ def data_to_file(recorded_audio):
     
     return temp_audio_path
 
+def preprocess_audio(audio_path):
+    # Load the audio file (convert MP3 to WAV for compatibility)
+    audio = AudioSegment.from_file(audio_path)
+
+    # Export it as a WAV file (You can change format if necessary)
+    processed_audio_path = "processed_audio.wav"
+    audio.export(processed_audio_path, format="wav")
+
+    return processed_audio_path
+    
 # Function to transcribe audio to text using Whisper
 def audio_to_text(audio_path):
     # Load the Whisper model (use the smallest model for Streamlit Cloud)
