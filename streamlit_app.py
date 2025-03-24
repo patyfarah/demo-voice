@@ -27,7 +27,8 @@ def frontend():
         status_placeholder.write("حفظ التسجيل...")
         transcription = audio_to_text("temp_audio.wav")
         status_placeholder.write("ترجمة التسجيل.")
-        st.text_area(":النص",transcription)
+        #st.text_area(":النص",transcription)
+        return transcription.text
         
 # Function to convert audio data to audio file
 def data_to_file(recorded_audio):
@@ -114,10 +115,10 @@ st.markdown(
 
 st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
 # Run the frontend function
-frontend()
+a = frontend()
 # Input fields
 st.subheader("حدد الموضوع")
-input_text = st.text_area("أدخل مضمون النص:")
+input_text = st.text_area("أدخل مضمون النص:",a)
 
 # Platform selection
 st.subheader("اختر المنصة")
