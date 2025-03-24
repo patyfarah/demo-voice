@@ -32,7 +32,6 @@ def frontend():
         
         # Save the audio to a file locally
         temp_path = data_to_file(recorded_audio)
-        st.text_area("Path", temp_path)
         # Transcribe the audio to text (Whisper)
         transcription = audio_to_text(temp_path)
         status_placeholder.write("Transcription completed.")
@@ -68,7 +67,7 @@ def preprocess_audio(audio_path):
 def audio_to_text(audio_path):
     # Load the Whisper model (use the smallest model for Streamlit Cloud)
     model = whisper.load_model("small")  # You can choose 'base', 'small', 'medium', or 'large'
-    
+    st.text_area("","ok")
     # Transcribe the audio file
     result = model.transcribe(audio_path, language="ar")  # 'ar' for Arabic transcription, 'en' for English
 
