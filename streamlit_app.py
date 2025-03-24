@@ -16,7 +16,7 @@ Groq_API_key = st.secrets["Groq_API_key"]
 # Front end using streamlit
 def frontend():
     status_placeholder = st.empty()
-    status_placeholder.write("Press the mic button to start speaking")
+    status_placeholder.write("سجل الموضوع بصوتك")
 
     recorded_audio = audio_recorder(sample_rate=8000)
 
@@ -27,17 +27,8 @@ def frontend():
         status_placeholder.write("Uploading audio...")
         transcription = audio_to_text("temp_audio.wav")
         status_placeholder.write("Transcription completed.")
-        translated_text = translate_to_arabic(transcription)
-        status_placeholder.write("Translation completed.")
-        status_placeholder.write(f"Arabic Translation: {translated_text}")
-        status_placeholder.write("Converting translation to audio...")
-
-        # Generate unique audio filename for translation
-        audio_filename = "translated_audio.wav"
-        asyncio.run(convert_audio(translated_text, audio_filename))
-
-        # Play translated audio
-        st.audio(audio_filename, format="audio/wav")
+        st.text_area(transcription)
+        
 
 # Function to convert audio data to audio file
 def data_to_file(recorded_audio):
@@ -55,16 +46,6 @@ def audio_to_text(audio_path):
         )
     return transcription.text
 
-# Function to translate text to Arabic
-def translate_to_arabic(text):
-    # Implement translation to Arabic (for now, simulate the translation)
-    return f"الترجمة إلى العربية: {text}"
-
-# Audio conversion
-async def convert_audio(text, filename):
-    voice = "ar-EG-OmarNeural"  # Arabic voice
-    communicate = edge_tts.Communicate(text, voice)
-    await communicate.save(filename)
 
 def generate(input_text, platform):
     """Generates content based on user input and platform."""
