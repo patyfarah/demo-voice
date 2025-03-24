@@ -27,14 +27,10 @@ def frontend():
         st.write("تم تسجيل بنجاح!")
         
         # Save the audio to a file locally
-        audio_path = 'temp_audio.wav'
-        st.text_area("Path", audio_path, height=100)
-        with open(audio_path, 'wb') as f:
-            f.write(recorded_audio)
+        temp_path = data_to_file(recorded_audio)
 
         # Transcribe the audio to text (Whisper)
-        convert_to_wav("temp_audio.mp3", "temp_audio.wav")
-        transcription = audio_to_text("temp_audio.wav")
+        transcription = audio_to_text(temp_path)
         status_placeholder.write("Transcription completed.")
 
         # Display the transcription in the input area
