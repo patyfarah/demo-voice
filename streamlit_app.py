@@ -9,6 +9,10 @@ from pydub import AudioSegment
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
+def convert_to_wav(input_path, output_path):
+    audio = AudioSegment.from_file(input_path)
+    audio.export(output_path, format="wav")
+    
 # Frontend for the application
 def frontend():
     status_placeholder = st.empty()
