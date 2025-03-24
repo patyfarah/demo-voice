@@ -28,7 +28,7 @@ def frontend():
         transcription = audio_to_text("temp_audio.wav")
         status_placeholder.write("ترجمة التسجيل.")
         #st.text_area(":النص",transcription)
-        return transcription.text
+        return transcription
         
 # Function to convert audio data to audio file
 def data_to_file(recorded_audio):
