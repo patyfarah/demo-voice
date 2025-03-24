@@ -1,7 +1,10 @@
 streamlit
 google-genai
-git+https://github.com/openai/whisper.git
 audio-recorder-streamlit
-ffmpeg
 pydub
+langchain
+langchain_core
+langchain_community
+langchain_groq
+edge-tts
 
