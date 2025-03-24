@@ -3,4 +3,5 @@ google-genai
 git+https://github.com/openai/whisper.git
 audio-recorder-streamlit
 ffmpeg
+pydub
 
