@@ -10,7 +10,6 @@ gemini_api_key = st.secrets["GeminiAI_Key"]
 
 # Frontend for the application
 def frontend():
-    st.title("Voice to Arabic Transcription using Whisper")
 
     status_placeholder = st.empty()
     status_placeholder.write("Press the mic button to record your voice.")
