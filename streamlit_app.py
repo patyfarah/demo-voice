@@ -66,9 +66,6 @@ async def convert_audio(text, filename):
     communicate = edge_tts.Communicate(text, voice)
     await communicate.save(filename)
 
-frontend()
- 
-
 def generate(input_text, platform):
     """Generates content based on user input and platform."""
     client = genai.Client(
