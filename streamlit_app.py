@@ -27,9 +27,18 @@ def frontend():
 
     # Handle the recorded audio
     if recorded_audio:
-        status_placeholder.write("...يتم التحويل الصوت الى نص")
-        # Save the audio file
-        data_to_file(recorded_audio)
+        st.audio(recorded_audio, format="audio/wav")
+        st.write("Recording complete! Uploading to GitHub...")
+
+        # Save the audio to a file locally
+        audio_path = 'temp_audio.wav'
+        with open(audio_path, 'wb') as f:
+            f.write(recorded_audio)
+
+        # Upload to GitHub
+        #upload_audio_to_github(audio_path, repo_name, 'audio/temp_audio.wav', token, branch)
+
+        #st.write("Audio uploaded successfully to GitHub!")
 
         # Transcribe the audio to text (Whisper)
         transcription = audio_to_text("temp_audio.wav")
