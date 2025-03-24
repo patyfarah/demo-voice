@@ -67,10 +67,9 @@ def preprocess_audio(audio_path):
 def audio_to_text(audio_path):
     # Load the Whisper model (use the smallest model for Streamlit Cloud)
     model = whisper.load_model("small")  # You can choose 'base', 'small', 'medium', or 'large'
-    st.text_area("","ok")
     # Transcribe the audio file
     result = model.transcribe(audio_path, language="ar")  # 'ar' for Arabic transcription, 'en' for English
-
+    st.text_area("","ok")
     return result["text"]
 
 def generate(input_text, platform):
