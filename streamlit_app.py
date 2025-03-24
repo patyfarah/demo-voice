@@ -12,18 +12,22 @@ load_dotenv()
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
+# GitHub credentials and repository info
+repo_name = 'patyfarah/social-media-ar'
+token = 'patyfarah-access-token'
+branch = 'main'  # Default branch (usually 'main' or 'master')
+
 # Frontend for the application
 def frontend():
-
     status_placeholder = st.empty()
-    status_placeholder.write("Press the mic button to record your voice.")
+    status_placeholder.write("سجل الموضوع بصوتك.")
 
     # Record audio input
     recorded_audio = audio_recorder(sample_rate=8000)
 
     # Handle the recorded audio
     if recorded_audio:
-        status_placeholder.write("Converting audio to text...")
+        status_placeholder.write("...يتم التحويل الصوت الى نص")
         # Save the audio file
         data_to_file(recorded_audio)
 
@@ -61,7 +65,7 @@ def preprocess_audio(audio_path):
 # Function to transcribe audio to text using Whisper
 def audio_to_text(audio_path):
     # Load the Whisper model (use the smallest model for Streamlit Cloud)
-    model = whisper.load_model("base")  # You can choose 'base', 'small', 'medium', or 'large'
+    model = whisper.load_model("small")  # You can choose 'base', 'small', 'medium', or 'large'
     
     # Transcribe the audio file
     result = model.transcribe(audio_path, language="ar")  # 'ar' for Arabic transcription, 'en' for English
