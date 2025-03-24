@@ -49,11 +49,6 @@ def audio_to_text(audio_path):
 
     return result["text"]
 
-# Run the frontend function
-frontend()
-
-
-
 def generate(input_text, platform):
     client = genai.Client(
         api_key=gemini_api_key,
@@ -125,7 +120,8 @@ st.markdown(
 )
 
 st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
-
+# Run the frontend function
+frontend()
 # Input fields
 st.subheader("حدد الموضوع")
 input_text = st.text_area("أدخل مضمون النص:")
