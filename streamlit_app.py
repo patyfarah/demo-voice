@@ -5,6 +5,9 @@ from google import genai
 from google.genai import types
 from audio_recorder_streamlit import audio_recorder
 import whisper
+from dotenv import load_dotenv
+
+load_dotenv()
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
