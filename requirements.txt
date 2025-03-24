@@ -1,9 +1,5 @@
 streamlit
 google-genai
-langchain
-langchain_core
-langchain_community
-langchain_groq
-python-dotenv
-audio_recorder_streamlit
-edge-tts
+git+https://github.com/openai/whisper.git
+audio-recorder-streamlit
+
