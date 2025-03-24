@@ -4,7 +4,6 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from audio_recorder_streamlit import audio_recorder
-import whisper
 from pydub import AudioSegment
 from groq import Groq
 import edge_tts
