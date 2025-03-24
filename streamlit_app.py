@@ -22,29 +22,29 @@ def frontend():
 
     # Handle user input
     if recorded_audio:
-        status_placeholder.write("Converting audio...")
+        status_placeholder.write("تسجيل الموضوع...")
         data_to_file(recorded_audio)
-        status_placeholder.write("Uploading audio...")
+        status_placeholder.write("حفظ التسجيل...")
         transcription = audio_to_text("temp_audio.wav")
-        status_placeholder.write("Transcription completed.")
-        st.text_area(transcription)
+        status_placeholder.write("ترجمة التسجيل.")
         
-
 # Function to convert audio data to audio file
 def data_to_file(recorded_audio):
     temp_audio_path = "temp_audio.wav"
     with open(temp_audio_path, "wb") as temp_file:
         temp_file.write(recorded_audio)
 
-# Function for audio to text
-def audio_to_text(audio_path):
+# Function for audio to Arabic text translation
+def audio_to_text_in_arabic(audio_path):
     client = Groq(api_key=Groq_API_key)
     with open(audio_path, 'rb') as file:
         transcription = client.audio.translations.create(
             file=(audio_path, file.read()),
             model='whisper-large-v3',
+            target_language='ar'  # Specify Arabic as the target language
         )
     return transcription.text
+
 
 
 def generate(input_text, platform):
@@ -117,7 +117,7 @@ st.title("أداة لخلق محتوى بيئي لمنصات التواصل ال
 frontend()
 # Input fields
 st.subheader("حدد الموضوع")
-input_text = st.text_area("أدخل مضمون النص:")
+input_text = st.text_area("أدخل مضمون النص:",transcription)
 
 # Platform selection
 st.subheader("اختر المنصة")
