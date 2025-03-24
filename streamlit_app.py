@@ -28,7 +28,7 @@ def frontend():
         
         # Save the audio to a file locally
         temp_path = data_to_file(recorded_audio)
-
+        st.text_area("Path", temp_path)
         # Transcribe the audio to text (Whisper)
         transcription = audio_to_text(temp_path)
         status_placeholder.write("Transcription completed.")
