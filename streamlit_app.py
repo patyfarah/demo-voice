@@ -39,6 +39,14 @@ def data_to_file(recorded_audio):
     with open(temp_audio_path, "wb") as temp_file:
         temp_file.write(recorded_audio)
 
+    # Check if the file exists and is a valid audio file
+    if os.path.exists(temp_audio_path):
+        print(f"Audio file saved at: {temp_audio_path}")
+    else:
+        print(f"Failed to save audio file at: {temp_audio_path}")
+    
+    return temp_audio_path
+
 # Function to transcribe audio to text using Whisper
 def audio_to_text(audio_path):
     # Load the Whisper model (use the smallest model for Streamlit Cloud)
