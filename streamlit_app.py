@@ -7,19 +7,9 @@ from audio_recorder_streamlit import audio_recorder
 import whisper
 from pydub import AudioSegment
 
-# Ensure ffmpeg is available via Python (Streamlit Cloud doesn't support apt-get install)
-try:
-    import ffmpeg
-except ImportError:
-    st.warning("FFmpeg is not installed. Some features may not work.")
-
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
-def convert_to_wav(input_path, output_path):
-    """Converts audio to wav format."""
-    audio = AudioSegment.from_file(input_path)
-    audio.export(output_path, format="wav")
-    
+ 
 # Frontend for the application
 def frontend():
     status_placeholder = st.empty()
@@ -36,7 +26,7 @@ def frontend():
         # Save the audio to a file locally
         temp_path = data_to_file(recorded_audio)
         # Transcribe the audio to text (Whisper)
-        transcription = audio_to_text(temp_path)
+        transcription = audio_to_text(recorded_audio)
         status_placeholder.write("Transcription completed.")
 
         # Display the transcription in the input area
