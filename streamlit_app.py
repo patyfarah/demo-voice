@@ -9,11 +9,6 @@ from pydub import AudioSegment
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
-# GitHub credentials and repository info
-repo_name = 'patyfarah/social-media-ar'
-token = 'patyfarah-access-token'
-branch = 'main'  # Default branch (usually 'main' or 'master')
-
 # Frontend for the application
 def frontend():
     status_placeholder = st.empty()
@@ -25,7 +20,7 @@ def frontend():
     # Handle the recorded audio
     if recorded_audio:
         st.audio(recorded_audio, format="audio/wav")
-        st.write("Recording complete!")
+        st.write("تم تسجيل بنجاح!")
         
         # Save the audio to a file locally
         audio_path = 'temp_audio.wav'
@@ -33,12 +28,8 @@ def frontend():
         with open(audio_path, 'wb') as f:
             f.write(recorded_audio)
 
-        # Upload to GitHub
-        #upload_audio_to_github(audio_path, repo_name, 'audio/temp_audio.wav', token, branch)
-
-        #st.write("Audio uploaded successfully to GitHub!")
-
         # Transcribe the audio to text (Whisper)
+        convert_to_wav("temp_audio.mp3", "temp_audio.wav")
         transcription = audio_to_text("temp_audio.wav")
         status_placeholder.write("Transcription completed.")
 
