@@ -3,8 +3,54 @@ import os
 import streamlit as st
 from google import genai
 from google.genai import types
+from audio_recorder_streamlit import audio_recorder
+import whisper
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
+
+# Frontend for the application
+def frontend():
+    st.title("Voice to Arabic Transcription using Whisper")
+
+    status_placeholder = st.empty()
+    status_placeholder.write("Press the mic button to record your voice.")
+
+    # Record audio input
+    recorded_audio = audio_recorder(sample_rate=8000)
+
+    # Handle the recorded audio
+    if recorded_audio:
+        status_placeholder.write("Converting audio to text...")
+        # Save the audio file
+        data_to_file(recorded_audio)
+
+        # Transcribe the audio to text (Whisper)
+        transcription = audio_to_text("temp_audio.wav")
+        status_placeholder.write("Transcription completed.")
+
+        # Display the transcription in the input area
+        st.text_area("Transcription", transcription, height=200)
+
+# Function to convert audio data to a file
+def data_to_file(recorded_audio):
+    temp_audio_path = "temp_audio.wav"
+    with open(temp_audio_path, "wb") as temp_file:
+        temp_file.write(recorded_audio)
+
+# Function to transcribe audio to text using Whisper
+def audio_to_text(audio_path):
+    # Load the Whisper model (use the smallest model for Streamlit Cloud)
+    model = whisper.load_model("base")  # You can choose 'base', 'small', 'medium', or 'large'
+    
+    # Transcribe the audio file
+    result = model.transcribe(audio_path, language="ar")  # 'ar' for Arabic transcription, 'en' for English
+
+    return result["text"]
+
+# Run the frontend function
+frontend()
+
+
 
 def generate(input_text, platform):
     client = genai.Client(
