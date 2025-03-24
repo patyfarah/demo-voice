@@ -35,7 +35,7 @@ def data_to_file(recorded_audio):
         temp_file.write(recorded_audio)
 
 # Function for audio to Arabic text translation
-def audio_to_text_in_arabic(audio_path):
+def audio_to_text(audio_path):
     client = Groq(api_key=Groq_API_key)
     with open(audio_path, 'rb') as file:
         transcription = client.audio.translations.create(
