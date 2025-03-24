@@ -41,8 +41,7 @@ def audio_to_text(audio_path):
     with open(audio_path, 'rb') as file:
         transcription = client.audio.translations.create(
             file=(audio_path, file.read()),
-            model='whisper-large-v3',
-            language='ar'
+            model='whisper-large-v3'
         )
     return transcription.text
 
