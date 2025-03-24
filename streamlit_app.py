@@ -65,7 +65,7 @@ def generate(input_text, platform):
     # Platform-specific configurations
     platform_config = {
         "X": {
-            "max_tokens": 280,
+            "max_tokens": 100,
             "instruction": "اعطني كخبير في مجال البيئة تغريدة لمنصة إكس، احصر إجابتك بالمواضيع البيئية فقط وعدد المقترح واحد، لا جواب إذا لم يكن الموضوع بيئيًا."
         },
         "Facebook": {
