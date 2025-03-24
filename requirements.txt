@@ -8,5 +8,5 @@ langchain_community
 langchain_groq
 edge-tts
 groq 
-googletrans==4.0.0-rc1
+googletrans
 
