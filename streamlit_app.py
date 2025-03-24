@@ -7,6 +7,10 @@ from audio_recorder_streamlit import audio_recorder
 import whisper
 from pydub import AudioSegment
 
+# Install ffmpeg if not installed
+if not os.system("which ffmpeg"):
+    os.system("apt-get update && apt-get install ffmpeg -y")
+
 gemini_api_key = st.secrets["GeminiAI_Key"]
 
 def convert_to_wav(input_path, output_path):
