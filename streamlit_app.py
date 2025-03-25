@@ -106,8 +106,11 @@ st.markdown(
     font-family: 'CustomArabicFont';
     src: url('path-to-font-file.ttf');
     body {
-    direction: ltr;
-    text-align: left;
+    text-align: right;
+    font-family: 'CustomArabicFont', Arial, sans-serif;
+    font-size: 24px;
+    direction: rtl;
+    unicode-bidi: embed;
     }
     </style>
     """,
