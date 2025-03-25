@@ -35,14 +35,12 @@ def frontend():
     status_placeholder.write("سجل الموضوع بصوتك")
 
     # Record audio and store it in a variable
-    # Use a single column for the audio recorder
-    col1,col2,col3 = st.columns([1,2,1])  # Create one column
+    col1,col2,col3 = st.columns([1,2,1])  
     
-    # Place the audio recorder inside col1 and align it to the right using custom CSS
+    # Place the audio recorder inside col1 and align it to the right
     with col1:
         recorded_audio = audio_recorder(sample_rate=8000)
-
-     
+ 
     
     # Handle user input
     if recorded_audio:
