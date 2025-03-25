@@ -37,8 +37,9 @@ def speech_to_text_with_arabic_translation():
     Uses audio-recorder-streamlit for audio capture.
     """
     translator = Translator()
-
-    audio_bytes = audio_recorder()
+    col1,col2,col3=st.columns([1,2,1])
+    with col1:
+        audio_bytes = audio_recorder()
 
     if audio_bytes:
         try:
