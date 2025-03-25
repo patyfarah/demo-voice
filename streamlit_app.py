@@ -132,7 +132,7 @@ st.sidebar.markdown("""
 **البريد الإلكتروني:** farahpaty@hotmail.com
 <div style="color: blue; font-size: 50px;">This is a blue text with a custom font size.</div>
 
-""")
+""", unsafe_allow_html=True)
 
 # Run the frontend function
 a = frontend()
