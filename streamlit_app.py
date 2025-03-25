@@ -34,7 +34,7 @@ st.markdown(
 
     /* Sidebar title font size */
     #.css-1wa3e2d {
-    .h1 {
+    .sidebar {
         font-size: 30px;  /* Adjust the font size of the title */
     }
 
