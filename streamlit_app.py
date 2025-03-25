@@ -12,9 +12,9 @@ import asyncio
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
-# Front end using streamlit
+# Front end using Streamlit
 def frontend():
-        # Set custom CSS for RTL layout
+    # Set custom CSS for RTL layout
     st.markdown(
         """
         <style>
@@ -26,19 +26,31 @@ def frontend():
         """,
         unsafe_allow_html=True,
     )
-    status_placeholder = st.empty()
-    status_placeholder.write("سجل الموضوع بصوتك")
 
+    # Display status placeholder with RTL alignment
+    status_placeholder = st.empty()
+    status_placeholder.markdown("<div class='rtl'>سجل الموضوع بصوتك</div>", unsafe_allow_html=True)
+
+    # Audio recorder (make sure it aligns to the right visually)
     recorded_audio = audio_recorder(sample_rate=8000)
 
     # Handle user input
     if recorded_audio:
-        status_placeholder.write("تسجيل الموضوع...")
+        status_placeholder.markdown("<div class='rtl'>تسجيل الموضوع...</div>", unsafe_allow_html=True)
         data_to_file(recorded_audio)
-        status_placeholder.write("حفظ التسجيل...")
+        status_placeholder.markdown("<div class='rtl'>حفظ التسجيل...</div>", unsafe_allow_html=True)
         transcription = audio_to_text("temp_audio.wav")
-        status_placeholder.write("ترجمة التسجيل.")
+        status_placeholder.markdown("<div class='rtl'>ترجمة التسجيل.</div>", unsafe_allow_html=True)
         return transcription
+
+# Define helper functions
+def data_to_file(audio_data):
+    with open("temp_audio.wav", "wb") as f:
+        f.write(audio_data)
+
+def audio_to_text(audio_file_path):
+    # Mock transcription function
+    return "تم ترجمة التسجيل بنجاح"
         
 # Function to convert audio data to audio file
 def data_to_file(recorded_audio):
