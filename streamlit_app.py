@@ -55,7 +55,7 @@ def speech_to_text_with_arabic_translation():
 
             # Translate to Arabic
             translation = translator.translate(text, dest="ar")
-            return translation
+            return translation.text
 
         except sr.UnknownValueError:
             st.error("Could not understand audio.")
