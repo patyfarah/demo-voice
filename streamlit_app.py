@@ -27,6 +27,10 @@ st.markdown(
         direction: rtl;
         text-align: right;
     }
+    .audio-recorder {
+        display: flex;
+        justify-content: flex-end;
+    }
 
     </style>
     """,
@@ -40,12 +44,14 @@ def frontend():
     status_placeholder.write("سجل الموضوع بصوتك")
 
     # Record audio and store it in a variable
-    # Using Streamlit columns to position the audio widget
-    col1,col2,col3 = st.columns([1,2,1])  # This will create three columns
+    # Use a single column for the audio recorder
+    col1 = st.columns([1])[0]  # Create one column
     
-    # You can place the audio widget in the middle column
+    # Place the audio recorder inside col1 and align it to the right using custom CSS
     with col1:
+        st.markdown('<div class="audio-recorder">', unsafe_allow_html=True)  # Open the div with right alignment
         recorded_audio = audio_recorder(sample_rate=8000)
+        st.markdown('</div>', unsafe_allow_html=True)  # Close the div
      
     
     # Handle user input
