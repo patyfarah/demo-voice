@@ -41,10 +41,10 @@ def frontend():
 
     # Record audio and store it in a variable
     # Using Streamlit columns to position the audio widget
-    col1 = st.columns([1])  # This will create three columns
+    col1,col2 = st.columns([1,1])  # This will create three columns
     
     # You can place the audio widget in the middle column
-    with col1[0]:
+    with col1:
         recorded_audio = audio_recorder(sample_rate=8000)
      
     
