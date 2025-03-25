@@ -14,6 +14,18 @@ Groq_API_key = st.secrets["Groq_API_key"]
 
 # Front end using streamlit
 def frontend():
+        # Set custom CSS for RTL layout
+    st.markdown(
+        """
+        <style>
+        .rtl {
+            direction: rtl;
+            text-align: right;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     status_placeholder = st.empty()
     status_placeholder.write("سجل الموضوع بصوتك")
 
