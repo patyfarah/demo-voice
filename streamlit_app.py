@@ -34,12 +34,12 @@ st.markdown(
 
     /* Sidebar title font size */
     .css-1wa3e2d {
-        font-size: 80px;  /* Adjust the font size of the title */
+        font-size: 8px;  /* Adjust the font size of the title */
     }
 
     /* Sidebar text font size */
     .css-1v0mbdj {
-        font-size: 48px;  /* Adjust the font size of the markdown text */
+        font-size: 4px;  /* Adjust the font size of the markdown text */
     }
     </style>
     """,
