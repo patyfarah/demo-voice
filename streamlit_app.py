@@ -18,7 +18,7 @@ def frontend():
     status_placeholder = st.empty()
     status_placeholder.write("سجل الموضوع بصوتك")
     st.markdown('<div class="microphone-container">', unsafe_allow_html=True)
-   st.html(
+    st.html(
         """
         <div class="rtl">
                 recorded_audio = audio_recorder(sample_rate=8000)
