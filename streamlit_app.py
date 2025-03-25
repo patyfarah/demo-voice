@@ -10,6 +10,28 @@ from groq import Groq
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
+# Streamlit app
+st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
+
+st.markdown(
+    """
+    <style>
+    body {
+        text-align: right;
+        font-family:  Arial, sans-serif;
+        font-size: 24px;
+        direction: rtl;
+        unicode-bidi: embed;
+    }
+    .rtl {
+        direction: rtl;
+        text-align: right;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Front end using streamlit
 def frontend():
     status_placeholder = st.empty()
@@ -95,27 +117,6 @@ def generate(input_text, platform):
     return result
 
 
-# Streamlit app
-st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
-
-st.markdown(
-    """
-    <style>
-    body {
-        text-align: right;
-        font-family:  Arial, sans-serif;
-        font-size: 24px;
-        direction: rtl;
-        unicode-bidi: embed;
-    }
-    .rtl {
-        direction: rtl;
-        text-align: right;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
 # Run the frontend function
