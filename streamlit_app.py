@@ -6,8 +6,6 @@ from google.genai import types
 from audio_recorder_streamlit import audio_recorder
 from pydub import AudioSegment
 from groq import Groq
-import edge_tts
-import asyncio
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
@@ -27,6 +25,10 @@ def frontend():
         """,
         unsafe_allow_html=True
     )
+
+    # Record audio and store it in a variable
+    recorded_audio = audio_recorder(sample_rate=8000)
+
     st.html(
         """
         <div class="rtl">
@@ -44,24 +46,16 @@ def frontend():
         transcription = audio_to_text("temp_audio.wav")
         status_placeholder.write("ترجمة التسجيل.")
         return transcription
-        
+
+
 # Define helper functions
 def data_to_file(audio_data):
     with open("temp_audio.wav", "wb") as f:
         f.write(audio_data)
 
-def audio_to_text(audio_file_path):
-    # Mock transcription function
-    return "تم ترجمة التسجيل بنجاح"
-        
-# Function to convert audio data to audio file
-def data_to_file(recorded_audio):
-    temp_audio_path = "temp_audio.wav"
-    with open(temp_audio_path, "wb") as temp_file:
-        temp_file.write(recorded_audio)
 
-# Function for audio to Arabic text translation
 def audio_to_text(audio_path):
+    # Use the Groq client for transcription
     client = Groq(api_key=Groq_API_key)
     with open(audio_path, 'rb') as file:
         transcription = client.audio.translations.create(
@@ -69,7 +63,6 @@ def audio_to_text(audio_path):
             model='whisper-large-v3'
         )
     return transcription.text
-
 
 
 def generate(input_text, platform):
@@ -122,6 +115,7 @@ def generate(input_text, platform):
         result += chunk.text
     return result
 
+
 # Streamlit app
 st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
 
@@ -149,7 +143,7 @@ st.title("أداة لخلق محتوى بيئي لمنصات التواصل ال
 a = frontend()
 # Input fields
 st.subheader("حدد الموضوع")
-input_text = st.text_area("أدخل مضمون النص:",a)
+input_text = st.text_area("أدخل مضمون النص:", a)
 
 # Platform selection
 st.subheader("اختر المنصة")
