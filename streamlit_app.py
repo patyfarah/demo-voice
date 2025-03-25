@@ -44,7 +44,7 @@ def frontend():
     
     # Place the audio recorder inside col1 and align it to the right using custom CSS
     with col1:
-        st.markdown("<div style='text-align: right;'>", unsafe_allow_html=True)  # Open the div with right alignment
+        st.markdown("<div style='text-align: left;'>", unsafe_allow_html=True)  # Open the div with right alignment
         recorded_audio = audio_recorder(sample_rate=8000)
         st.markdown('</div>', unsafe_allow_html=True)  # Close the div
      
