@@ -4,8 +4,13 @@ import streamlit as st
 from google import genai
 from google.genai import types
 from audio_recorder_streamlit import audio_recorder
+import speech_recognition as sr
+from googletrans import Translator
+import tempfile
+
 from pydub import AudioSegment
 from groq import Groq
+
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
@@ -30,43 +35,42 @@ st.markdown(
 
 
 # Front end using streamlit
-def frontend():
-    status_placeholder = st.empty()
-    status_placeholder.write("سجل الموضوع بصوتك")
-    st.write("يقوم بترجمة اللغات الى اللغة الانكليزية فقط")
+def speech_to_text_with_arabic_translation():
+    """
+    Captures speech from recorded audio, converts it to text, and translates it to Arabic.
+    Uses audio-recorder-streamlit for audio capture.
+    """
+    translator = Translator()
 
-    # Record audio and store it in a variable
-    col1,col2,col3 = st.columns([1,2,1])  
-    
-    # Place the audio recorder inside col1 and align it to the right
-    with col1:
-        recorded_audio = audio_recorder(sample_rate=8000)
- 
-    
-    # Handle user input
-    if recorded_audio:
-        status_placeholder.write("تسجيل الموضوع...")
-        data_to_file(recorded_audio)
-        status_placeholder.write("حفظ التسجيل...")
-        transcription = audio_to_text("temp_audio.wav")
-        status_placeholder.write("ترجمة التسجيل.")
-        return transcription
+    audio_bytes = audio_recorder()
 
-# Define helper functions
-def data_to_file(audio_data):
-    with open("temp_audio.wav", "wb") as f:
-        f.write(audio_data)
+    if audio_bytes:
+        try:
+            # Save the recorded audio to a temporary WAV file
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
+                temp_audio.write(audio_bytes)
+                temp_audio_path = temp_audio.name
 
+            recognizer = sr.Recognizer()
 
-def audio_to_text(audio_path):
-    # Use the Groq client for transcription
-    client = Groq(api_key=Groq_API_key)
-    with open(audio_path, 'rb') as file:
-        transcription = client.audio.translations.create(
-            file=(audio_path, file.read()),
-            model='whisper-large-v3'
-        )
-    return transcription.text
+            with sr.AudioFile(temp_audio_path) as source:
+                audio_data = recognizer.record(source)
+                text = recognizer.recognize_google(audio_data)
+
+            # Translate to Arabic
+            translation = translator.translate(text, dest="ar")
+            return translation
+
+        except sr.UnknownValueError:
+            st.error("Could not understand audio.")
+        except sr.RequestError as e:
+            st.error(f"Could not request results from Google Speech Recognition service; {e}")
+        except Exception as e:
+            st.error(f"An unexpected error occurred: {e}")
+        finally:
+            # Clean up the temporary audio file
+            if 'temp_audio_path' in locals():
+                os.remove(temp_audio_path)
 
 
 def generate(input_text, platform):
@@ -138,10 +142,10 @@ st.sidebar.markdown("""
 """, unsafe_allow_html=True)
 
 # Run the frontend function
-a = frontend()
+text = speech_to_text_with_arabic_translation()
 # Input fields
 st.subheader("حدد الموضوع")
-input_text = st.text_area("أدخل مضمون النص:", a)
+input_text = st.text_area("أدخل مضمون النص:", text)
 
 # Platform selection
 st.subheader("اختر المنصة")
