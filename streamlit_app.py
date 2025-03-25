@@ -105,10 +105,7 @@ st.markdown(
     @font-face {
     font-family: 'CustomArabicFont';
     src: url('path-to-font-file.ttf');
-    body {
-        direction: rtl;
-        text-align: right;
-    }
+
     </style>
     """,
     unsafe_allow_html=True
