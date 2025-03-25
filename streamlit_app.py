@@ -28,13 +28,13 @@ st.markdown(
         text-align: right;
     }
         /* Sidebar background color */
-    #.css-1d391kg {
-    .h1 {
+    .css-1d391kg {
         background-color: #000080;  /* Change this to your desired background color */
     }
 
     /* Sidebar title font size */
-    .css-1wa3e2d {
+    #.css-1wa3e2d {
+    .h1 {
         font-size: 30px;  /* Adjust the font size of the title */
     }
 
