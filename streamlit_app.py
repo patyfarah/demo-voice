@@ -28,7 +28,8 @@ st.markdown(
         text-align: right;
     }
         /* Sidebar background color */
-    .css-1d391kg {
+    #.css-1d391kg {
+    .st-emotion-cache-6qob1r {
         background-color: #000080;  /* Change this to your desired background color */
     }
 
