@@ -7,6 +7,8 @@ from audio_recorder_streamlit import audio_recorder
 from pydub import AudioSegment
 from groq import Groq
 
+# -*- coding: utf-8 -*-
+
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
