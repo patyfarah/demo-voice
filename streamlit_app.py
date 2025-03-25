@@ -18,7 +18,14 @@ def frontend():
     status_placeholder = st.empty()
     status_placeholder.write("سجل الموضوع بصوتك")
     st.markdown('<div class="microphone-container">', unsafe_allow_html=True)
-    recorded_audio = audio_recorder(sample_rate=8000)
+   st.html(
+        """
+        <div class="rtl">
+                recorded_audio = audio_recorder(sample_rate=8000)
+        </div>
+        """,
+        height=100,
+    )
 
     # Handle user input
     if recorded_audio:
@@ -113,16 +120,15 @@ st.markdown(
     """
     <style>
     body {
-    text-align: right;
-    font-family:  Arial, sans-serif;
-    font-size: 24px;
-    direction: rtl;
-    unicode-bidi: embed;
+        text-align: right;
+        font-family:  Arial, sans-serif;
+        font-size: 24px;
+        direction: rtl;
+        unicode-bidi: embed;
     }
-   .microphone-container {
-        display: flex;
-        justify-content: flex-end; /* Move the icon to the right */
-        margin-top: 10px;
+    .rtl {
+        direction: rtl;
+        text-align: right;
     }
     </style>
     """,
