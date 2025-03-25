@@ -33,6 +33,7 @@ st.markdown(
 def frontend():
     status_placeholder = st.empty()
     status_placeholder.write("سجل الموضوع بصوتك")
+    st.write("يقوم بترجمة اللغات الى اللغة الانكليزية فقط")
 
     # Record audio and store it in a variable
     col1,col2,col3 = st.columns([1,2,1])  
@@ -147,8 +148,8 @@ st.subheader("اختر المنصة")
 platform = st.selectbox("اختر منصة التواصل الاجتماعي:", ["X", "Facebook", "LinkedIn"])
 
 # Generate button
-if st.button("Generate"):
-    with st.spinner("Generating content..."):
+if st.button("جهز المحتوى"):
+    with st.spinner("يتم انشاء المحتوى"):
         try:
             output = generate(input_text, platform)
             st.success("تم خلق المحتوى بنجاح!")
