@@ -15,7 +15,7 @@ st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="
 
 st.markdown(
     """
-    <styleo
+    <style>
     body {
         text-align: right;
         font-family:  Arial, sans-serif;
