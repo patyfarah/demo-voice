@@ -27,12 +27,6 @@ st.markdown(
         direction: rtl;
         text-align: right;
     }
-    .audio-recorder {
-        direction: rtl;
-        display: flex;
-        justify-content: flex-end;
-    }
-
     </style>
     """,
     unsafe_allow_html=True
