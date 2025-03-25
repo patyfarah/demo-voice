@@ -29,7 +29,7 @@ st.markdown(
     }
         /* Sidebar background color */
     #.css-1d391kg {
-    .Section {
+    .h1 {
         background-color: #000080;  /* Change this to your desired background color */
     }
 
