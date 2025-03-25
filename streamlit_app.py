@@ -8,8 +8,8 @@ import speech_recognition as sr
 from googletrans import Translator
 import tempfile
 
-from pydub import AudioSegment
-from groq import Groq
+#from pydub import AudioSegment
+#from groq import Groq
 
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
