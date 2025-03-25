@@ -23,10 +23,6 @@ st.markdown(
         direction: rtl;
         unicode-bidi: embed;
     }
-    .rtl {
-        direction: rtl;
-        text-align: right;
-    }
     </style>
     """,
     unsafe_allow_html=True
