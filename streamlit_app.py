@@ -40,8 +40,12 @@ def frontend():
     status_placeholder.write("سجل الموضوع بصوتك")
 
     # Record audio and store it in a variable
-    recorded_audio = audio_recorder(sample_rate=8000)
+    st.markdown("""
     
+    <div style="color: #008080; font-size: 16px; text-align: left; padding: 10px; border: 1px solid #008080; margin-top: 20px;">
+        <strong>recorded_audio = audio_recorder(sample_rate=8000)</strong>
+    </div>
+    """, unsafe_allow_html=True)
     # Handle user input
     if recorded_audio:
         status_placeholder.write("تسجيل الموضوع...")
