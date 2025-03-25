@@ -11,11 +11,11 @@ gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
 # Streamlit app
-st.set_page_config(layout="centered", initial_sidebar_state="expanded", page_title="أداة لخلق محتوى بيئي")
+st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
 
 st.markdown(
     """
-    <style>
+    <styleo
     body {
         text-align: right;
         font-family:  Arial, sans-serif;
