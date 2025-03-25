@@ -29,7 +29,7 @@ st.markdown(
     }
         /* Sidebar background color */
     .css-1d391kg {
-        background-color: #f0f8ff;  /* Change this to your desired background color */
+        background-color: #000080;  /* Change this to your desired background color */
     }
 
     /* Sidebar title font size */
