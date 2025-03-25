@@ -21,7 +21,7 @@ def frontend():
     st.html(
         """
         <div class="rtl">
-                recorded_audio = audio_recorder(sample_rate=8000)
+            recorded_audio = audio_recorder(sample_rate=8000)
         </div>
         """,
         height=100,
