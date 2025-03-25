@@ -1,4 +1,4 @@
-import base64
+dedimport base64
 import os
 import streamlit as st
 from google import genai
@@ -11,7 +11,7 @@ gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
 # Streamlit app
-st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="أداة لخلق محتوى بيئي")
+st.set_page_config(layout="centered", initial_sidebar_state="expanded", page_title="أداة لخلق محتوى بيئي")
 
 st.markdown(
     """
@@ -31,6 +31,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 # Front end using streamlit
 def frontend():
@@ -119,6 +120,9 @@ def generate(input_text, platform):
 
 
 st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
+
+#Sidebar
+
 # Run the frontend function
 a = frontend()
 # Input fields
