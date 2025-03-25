@@ -27,21 +27,7 @@ st.markdown(
         direction: rtl;
         text-align: right;
     }
-        /* Sidebar background color */
-    .css-1d391kg {
-        background-color: #000080;  /* Change this to your desired background color */
-    }
 
-    /* Sidebar title font size */
-    #.css-1wa3e2d {
-    .sidebar {
-        font-size: 30px;  /* Adjust the font size of the title */
-    }
-
-    /* Sidebar text font size */
-    .css-1v0mbdj {
-        font-size: 18px;  /* Adjust the font size of the markdown text */
-    }
     </style>
     """,
     unsafe_allow_html=True
@@ -144,6 +130,8 @@ st.sidebar.markdown("""
 أعمل على بناء أدوات مبتكرة تساعد في تحسين النظم البيئية وجودة العمل الاداري
 
 **البريد الإلكتروني:** farahpaty@hotmail.com
+<div style="color: blue; font-size: 50px;">This is a blue text with a custom font size.</div>
+
 """)
 
 # Run the frontend function
