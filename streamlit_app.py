@@ -14,30 +14,10 @@ Groq_API_key = st.secrets["Groq_API_key"]
 def frontend():
     status_placeholder = st.empty()
     status_placeholder.write("سجل الموضوع بصوتك")
-    st.markdown(
-        """
-        <style>
-        .rtl {
-            direction: rtl;
-            text-align: right;
-        }
-       </style>
-        """,
-        unsafe_allow_html=True
-    )
 
     # Record audio and store it in a variable
     recorded_audio = audio_recorder(sample_rate=8000)
-
-    st.html(
-        """
-        <div class="rtl">
-            recorded_audio = audio_recorder(sample_rate=8000)
-        </div>
-        """,
-        height=100
-    )
-
+    
     # Handle user input
     if recorded_audio:
         status_placeholder.write("تسجيل الموضوع...")
@@ -46,7 +26,6 @@ def frontend():
         transcription = audio_to_text("temp_audio.wav")
         status_placeholder.write("ترجمة التسجيل.")
         return transcription
-
 
 # Define helper functions
 def data_to_file(audio_data):
