@@ -13,36 +13,22 @@ gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
 # Front end using Streamlit
+# Front end using streamlit
 def frontend():
-    # Set custom CSS for RTL layout
-    st.markdown(
-        """
-        <style>
-        .rtl {
-            direction: rtl;
-            text-align: right;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # Display status placeholder with RTL alignment
     status_placeholder = st.empty()
-    status_placeholder.markdown("<div class='rtl'>سجل الموضوع بصوتك</div>", unsafe_allow_html=True)
+    status_placeholder.write("سجل الموضوع بصوتك")
 
-    # Audio recorder (make sure it aligns to the right visually)
     recorded_audio = audio_recorder(sample_rate=8000)
 
     # Handle user input
     if recorded_audio:
-        status_placeholder.markdown("<div class='rtl'>تسجيل الموضوع...</div>", unsafe_allow_html=True)
+        status_placeholder.write("تسجيل الموضوع...")
         data_to_file(recorded_audio)
-        status_placeholder.markdown("<div class='rtl'>حفظ التسجيل...</div>", unsafe_allow_html=True)
+        status_placeholder.write("حفظ التسجيل...")
         transcription = audio_to_text("temp_audio.wav")
-        status_placeholder.markdown("<div class='rtl'>ترجمة التسجيل.</div>", unsafe_allow_html=True)
+        status_placeholder.write("ترجمة التسجيل.")
         return transcription
-
+        
 # Define helper functions
 def data_to_file(audio_data):
     with open("temp_audio.wav", "wb") as f:
