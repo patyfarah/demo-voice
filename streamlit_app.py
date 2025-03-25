@@ -45,7 +45,7 @@ def frontend():
     
     # You can place the audio widget in the middle column
     with col2:
-        recorded_audio = st.audio(audio_recorder(sample_rate=8000))
+        recorded_audio = audio_recorder(sample_rate=8000)
      
     
     # Handle user input
