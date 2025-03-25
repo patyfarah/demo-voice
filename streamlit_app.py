@@ -1,4 +1,4 @@
-dedimport base64
+import base64
 import os
 import streamlit as st
 from google import genai
@@ -122,6 +122,14 @@ def generate(input_text, platform):
 st.title("أداة لخلق محتوى بيئي لمنصات التواصل الاجتماعي")
 
 #Sidebar
+# Sidebar information about you
+st.sidebar.title("عن المبرمج")
+st.sidebar.markdown("""
+مرحبًا، أنا باتي فرح، مطور وباحث في مجال الذكاء الاصطناعي ونظم المعلومات الجغرافية
+أعمل على بناء أدوات مبتكرة تساعد في تحسين النظم البيئية وجودة العمل الاداري
+
+**البريد الإلكتروني:** farahpaty@hotmail.com
+""")
 
 # Run the frontend function
 a = frontend()
