@@ -10,6 +10,12 @@ from groq import Groq
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
+```python
+
+# -*- coding: utf-8 -*-
+
+```
+
 # Streamlit app
 st.set_page_config(layout="centered", initial_sidebar_state="expanded", page_title="أداة لخلق محتوى بيئي")
 
