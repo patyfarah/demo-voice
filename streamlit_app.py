@@ -107,7 +107,7 @@ st.markdown(
     src: url('path-to-font-file.ttf');
     body {
         direction: rtl;
-        text-align: left;
+        text-align: right;
     }
     </style>
     """,
