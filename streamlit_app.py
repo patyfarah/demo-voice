@@ -41,7 +41,7 @@ def frontend():
 
     # Record audio and store it in a variable
     # Using Streamlit columns to position the audio widget
-    col1,col2,col3 = st.columns([1,1,1])  # This will create three columns
+    col1,col2,col3 = st.columns([1,2,1])  # This will create three columns
     
     # You can place the audio widget in the middle column
     with col1:
