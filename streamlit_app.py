@@ -12,18 +12,28 @@ import asyncio
 gemini_api_key = st.secrets["GeminiAI_Key"]
 Groq_API_key = st.secrets["Groq_API_key"]
 
-# Front end using Streamlit
 # Front end using streamlit
 def frontend():
     status_placeholder = st.empty()
     status_placeholder.write("سجل الموضوع بصوتك")
+    st.markdown(
+        """
+        <style>
+        .rtl {
+            direction: rtl;
+            text-align: right;
+        }
+       </style>
+        """,
+        unsafe_allow_html=True
+    )
     st.html(
         """
         <div class="rtl">
             recorded_audio = audio_recorder(sample_rate=8000)
         </div>
         """,
-        height=100,
+        height=100
     )
 
     # Handle user input
