@@ -27,6 +27,20 @@ st.markdown(
         direction: rtl;
         text-align: right;
     }
+        /* Sidebar background color */
+    .css-1d391kg {
+        background-color: #f0f8ff;  /* Change this to your desired background color */
+    }
+
+    /* Sidebar title font size */
+    .css-1wa3e2d {
+        font-size: 30px;  /* Adjust the font size of the title */
+    }
+
+    /* Sidebar text font size */
+    .css-1v0mbdj {
+        font-size: 18px;  /* Adjust the font size of the markdown text */
+    }
     </style>
     """,
     unsafe_allow_html=True
