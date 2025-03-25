@@ -102,6 +102,9 @@ st.set_page_config(layout="centered", initial_sidebar_state="auto", page_title="
 st.markdown(
     """
     <style>
+    @font-face {
+    font-family: 'CustomArabicFont';
+    src: url('path-to-font-file.ttf');
     body {
         direction: rtl;
         text-align: right;
