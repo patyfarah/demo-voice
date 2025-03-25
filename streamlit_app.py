@@ -44,7 +44,7 @@ def frontend():
     col1, col2, col3 = st.columns([1, 2, 1])  # This will create three columns
     
     # You can place the audio widget in the middle column
-    with col2:
+    with col3:
         recorded_audio = audio_recorder(sample_rate=8000)
      
     
