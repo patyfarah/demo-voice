@@ -17,7 +17,7 @@ Groq_API_key = st.secrets["Groq_API_key"]
 def frontend():
     status_placeholder = st.empty()
     status_placeholder.write("سجل الموضوع بصوتك")
-
+    st.markdown('<div class="microphone-container">', unsafe_allow_html=True)
     recorded_audio = audio_recorder(sample_rate=8000)
 
     # Handle user input
@@ -118,6 +118,11 @@ st.markdown(
     font-size: 24px;
     direction: rtl;
     unicode-bidi: embed;
+    }
+   .microphone-container {
+        display: flex;
+        justify-content: flex-end; /* Move the icon to the right */
+        margin-top: 10px;
     }
     </style>
     """,
