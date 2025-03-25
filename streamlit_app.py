@@ -8,12 +8,8 @@ import speech_recognition as sr
 from googletrans import Translator
 import tempfile
 
-#from pydub import AudioSegment
-#from groq import Groq
-
 
 gemini_api_key = st.secrets["GeminiAI_Key"]
-Groq_API_key = st.secrets["Groq_API_key"]
 
 # Streamlit app
 st.set_page_config(layout="centered", initial_sidebar_state="expanded", page_title="أداة لخلق محتوى بيئي")
@@ -142,10 +138,10 @@ st.sidebar.markdown("""
 """, unsafe_allow_html=True)
 
 # Run the frontend function
-text = speech_to_text_with_arabic_translation()
+a = speech_to_text_with_arabic_translation()
 # Input fields
 st.subheader("حدد الموضوع")
-input_text = st.text_area("أدخل مضمون النص:", text)
+input_text = st.text_area("أدخل مضمون النص:", a)
 
 # Platform selection
 st.subheader("اختر المنصة")
