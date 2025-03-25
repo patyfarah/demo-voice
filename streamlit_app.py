@@ -18,7 +18,7 @@ st.markdown(
     <style>
     body {
         text-align: right;
-        font-family:  Noto Sans Arabic,Amiri,Arial, sans-serif;
+        font-family:  Noto Sans Arabic,'Amiri',Arial, sans-serif;
         font-size: 24px;
         direction: rtl;
         unicode-bidi: embed;
